@@ -1,0 +1,625 @@
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/*
+ * libratp - Reliable Asynchronous Transport Protocol library
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301 USA.
+ *
+ * Copyright (C) 2017 Zodiac Inflight Innovations
+ * Copyright (C) 2017 Aleksander Morgado <aleksander@aleksander.es>
+ */
+
+#ifndef RATP_H
+#define RATP_H
+
+#include <stdio.h>
+#include <termios.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+/******************************************************************************/
+/**
+ * SECTION: ratp-core
+ * @title: Core library operations
+ * @short_description: Methods and types to initialize and teardown the library.
+ *
+ * This section defines the core types and methods exposed by the RATP library.
+ *
+ * <example>
+ * <title>Initializing and tearing down the library</title>
+ * <programlisting>
+ *  ratp_status_t  st;
+ *
+ *  if ((st = ratp_init ()) != RATP_STATUS_OK) {
+ *    fprintf (stderr, "error: couldn't initialize RATP library: %s\n", ratp_status_str (st));
+ *    return EXIT_FAILURE;
+ *  }
+ *
+ *  // Use the library here
+ *
+ * </programlisting>
+ * </example>
+ */
+
+/* Status */
+
+/**
+ * ratp_status_t:
+ * @RATP_STATUS_OK: Operation successful.
+ * @RATP_STATUS_ERROR: Operation failed.
+ * @RATP_STATUS_ERROR_NO_MEMORY: Not enough memory.
+ * @RATP_STATUS_INVALID_TRANSITION: Invalid state transition.
+ * @RATP_STATUS_WRITE_ERROR: Writing to the link failed.
+ * @RATP_STATUS_READ_ERROR: Reading from the link failed.
+ * @RATP_STATUS_TIMEOUT: Operation timed out.
+ * @RATP_STATUS_INVALID_DATA: Invalid data.
+ * @RATP_STATUS_DATA_REFUSED: Data refused by peer.
+ * @RATP_STATUS_DATA_LEFT_UNSENT: Data left unsent.
+ * @RATP_STATUS_CONNECTION_REFUSED: Connection refused by peer.
+ * @RATP_STATUS_CONNECTION_RESET: Connection reset by peer.
+ * @RATP_STATUS_CONNECTION_CLOSING: Connection closing.
+ * @RATP_STATUS_CONNECTION_ABORTED_USER_TIMEOUT: Connection aborted due to user
+ *  timeout.
+ * @RATP_STATUS_CONNECTION_ABORTED_RETRANSMISSION_FAILURE: Connection aborted
+ *  due to retransmission failures.
+ *
+ * Status of an operation performed with the RATP library.
+*/
+typedef enum {
+    RATP_STATUS_OK,
+    RATP_STATUS_ERROR,
+    RATP_STATUS_ERROR_NO_MEMORY,
+    RATP_STATUS_INVALID_TRANSITION,
+    RATP_STATUS_WRITE_ERROR,
+    RATP_STATUS_READ_ERROR,
+    RATP_STATUS_TIMEOUT,
+    RATP_STATUS_INVALID_DATA,
+    RATP_STATUS_DATA_REFUSED,
+    RATP_STATUS_DATA_LEFT_UNSENT,
+    RATP_STATUS_CONNECTION_REFUSED,
+    RATP_STATUS_CONNECTION_RESET,
+    RATP_STATUS_CONNECTION_CLOSING,
+    RATP_STATUS_CONNECTION_ABORTED_USER_TIMEOUT,
+    RATP_STATUS_CONNECTION_ABORTED_RETRANSMISSION_FAILURE,
+} ratp_status_t;
+
+/**
+ * ratp_status_str:
+ * @st: a #ratp_status_t.
+ *
+ * Gets a description for the given #ratp_status_t.
+ *
+ * Returns: a constant string.
+ */
+const char *ratp_status_str (ratp_status_t st);
+
+/* Library initialization */
+
+/**
+ * ratp_init:
+ *
+ * Initialize the library.
+ *
+ * If ratp_init() fails, no further library operations may be executed, it is a
+ * fatal error.
+ *
+ * Returns: a #ratp_status_t.
+ */
+ratp_status_t ratp_init (void);
+
+/******************************************************************************/
+/**
+ * SECTION: ratp-link
+ * @title: Link object
+ * @short_description: Basic methods to create and use RATP links.
+ *
+ * This section defines the RATP link type as well as methods to create and
+ * use them.
+ *
+ * <example>
+ * <title>Opening and closing the link</title>
+ * <programlisting>
+ *  static const char *message = "hello world!";
+ *  ratp_link_t       *ratp;
+ *  ratp_status_t      st;
+ *
+ *  ratp = ratp_link_new_tty ("/dev/ttyUSB3", B115200, 255);
+ *  if (!ratp) {
+ *    fprintf (stderr, "error: couldn't create link\n");
+ *    return EXIT_FAILURE;
+ *  }
+ *
+ *  if ((st = ratp_link_initialize (ratp)) != RATP_STATUS_OK) {
+ *    fprintf (stderr, "error: couldn't initialize link: %s\n", ratp_status_str (st));
+ *    return EXIT_FAILURE;
+ *  }
+ *
+ *  if ((st = ratp_link_active_open (ratp)) != RATP_STATUS_OK) {
+ *    fprintf (stderr, "error: couldn't request active open: %s\n", ratp_status_str (st));
+ *    return -1;
+ *  }
+ *
+ *  if ((st = ratp_link_send (ratp,
+ *                            10000,
+ *                            (const uint8_t *) message, strlen (message) + 1,
+ *                            NULL, NULL)) != RATP_STATUS_OK) {
+ *      fprintf (stderr, "error: couldn't schedule message to send: %s\n", ratp_status_str (st));
+ *      return -1;
+ *  }
+ *
+ *  // Do more things here if needed
+ *
+ *  ratp_link_close (ratp);
+ *  ratp_link_shutdown (ratp);
+ *  ratp_link_free (ratp);
+ * </programlisting>
+ * </example>
+ */
+
+/******************************************************************************/
+
+/* RATP link */
+
+/**
+ * ratp_link_t:
+ *
+ * This is an opaque type representing a RATP link.
+ */
+typedef struct ratp_link_s ratp_link_t;
+
+/**
+ * ratp_link_new_tty:
+ * @path: Serial port device path.
+ * @speed: Baudrate to use in the serial port.
+ * @mdl: Maximum data length allowed in this end.
+ *
+ * Create a new RATP link associated to a TTY.
+ *
+ * Returns: a newly created #ratp_link_t which should be disposed with
+ * ratp_link_free() or %NULL if an error happened.
+ */
+ratp_link_t *ratp_link_new_tty  (const char *path,
+                                 speed_t     speed,
+                                 uint8_t     mdl);
+
+/**
+ * ratp_link_new_fifo:
+ * @path_in: Input FIFO path.
+ * @path_out: Output FIFO path.
+ * @mdl: Maximum data length allowed in this end.
+ *
+ * Create a new RATP link associated to a pair of input/output FIFOs.
+ *
+ * Returns: a newly created #ratp_link_t which should be disposed with
+ * ratp_link_free() or %NULL if an error happened.
+ */
+ratp_link_t *ratp_link_new_fifo (const char *path_in,
+                                 const char *path_out,
+                                 uint8_t     mdl);
+
+/**
+ * ratp_link_free:
+ * @self: a #ratp_link_t.
+ *
+ * Dispose a #ratp_link_t.
+ */
+void ratp_link_free (ratp_link_t *self);
+
+/* Initialize and shutdown link */
+
+/**
+ * ratp_link_initialize:
+ * @self: a #ratp_link_t.
+ *
+ * Initialize a RATP link.
+ *
+ * This operation just opens and sets up the physical channel, it doesn't send
+ * or receive any RATP packet.
+ *
+ * Returns: a #ratp_status_t.
+ */
+ratp_status_t ratp_link_initialize (ratp_link_t *self);
+
+/**
+ * ratp_link_shutdown:
+ * @self: a #ratp_link_t.
+ *
+ * Shutdown a RATP link.
+ *
+ * This operation closes the physical channel.
+ */
+void ratp_link_shutdown (ratp_link_t *self);
+
+/* RATP state */
+
+/* RATP link state */
+
+/**
+ * ratp_link_state_t:
+ * @RATP_LINK_STATE_LISTEN: Listen.
+ * @RATP_LINK_STATE_SYN_SENT: SYN sent.
+ * @RATP_LINK_STATE_SYN_RECEIVED: SYN received.
+ * @RATP_LINK_STATE_ESTABLISHED: Established.
+ * @RATP_LINK_STATE_FIN_WAIT: FIN wait.
+ * @RATP_LINK_STATE_LAST_ACK: Last ACK.
+ * @RATP_LINK_STATE_CLOSING: Closing.
+ * @RATP_LINK_STATE_TIME_WAIT: Time wait.
+ * @RATP_LINK_STATE_CLOSED: Closed.
+ *
+ * State of the RATP link.
+ */
+typedef enum {
+    RATP_LINK_STATE_LISTEN,
+    RATP_LINK_STATE_SYN_SENT,
+    RATP_LINK_STATE_SYN_RECEIVED,
+    RATP_LINK_STATE_ESTABLISHED,
+    RATP_LINK_STATE_FIN_WAIT,
+    RATP_LINK_STATE_LAST_ACK,
+    RATP_LINK_STATE_CLOSING,
+    RATP_LINK_STATE_TIME_WAIT,
+    RATP_LINK_STATE_CLOSED,
+} ratp_link_state_t;
+
+/**
+ * ratp_link_state_str:
+ * @state: a #ratp_link_state_t.
+ *
+ * Gets a description for the given #ratp_link_state_t.
+ *
+ * Returns: a constant string.
+ */
+const char *ratp_link_state_str (ratp_link_state_t state);
+
+/**
+ * ratp_link_get_state:
+ * @self: a #ratp_link_t.
+ *
+ * Gets the current state of the RATP link.
+ *
+ * Returns: a #ratp_link_state_t.
+ */
+ratp_link_state_t ratp_link_get_state (ratp_link_t *self);
+
+/**
+ * ratp_link_state_update_func:
+ * @self: a #ratp_link_t.
+ * @old_state: the previous RATP link state.
+ * @new_state: the new RATP link state.
+ * @status_reason: the reason for the state change.
+ * @user_data: user data given by the user when registering the callback.
+ *
+ * Handler used to report state updates to the user.
+ */
+typedef void (* ratp_link_state_update_func) (ratp_link_t       *self,
+                                              ratp_link_state_t  old_state,
+                                              ratp_link_state_t  new_state,
+                                              ratp_status_t      status_reason,
+                                              void              *user_data);
+
+/**
+ * ratp_link_set_state_update_callback:
+ * @self: a #ratp_link_t.
+ * @callback: a #ratp_link_state_update_func.
+ * @user_data: user data to be passed to @callback.
+ *
+ * Set the callback to be called when RATP link state updates happen.
+ */
+void ratp_link_set_state_update_callback (ratp_link_t                 *self,
+                                          ratp_link_state_update_func  callback,
+                                          void                        *user_data);
+
+/******************************************************************************/
+/* RATP link operations */
+
+/**
+ * ratp_link_active_open:
+ * @self: a #ratp_link_t.
+ *
+ * Requests to actively open the RATP link.
+ *
+ * This method does not wait for the RATP link to be established, it just
+ * schedules the request. Link state updates may be monitored with the callback
+ * configured via ratp_link_set_state_update_callback().
+ *
+ * Returns: a #ratp_status_t.
+ */
+ratp_status_t ratp_link_active_open (ratp_link_t *self);
+
+/**
+ * ratp_link_active_open_sync:
+ * @self: a #ratp_link_t.
+ * @timeout_ms: maximum time, in milliseconds, to wait for the link to be
+ *  established; or 0 to wait forever.
+ *
+ * Requests to actively open the RATP link.
+ *
+ * This method blocks until the RATP link is established or until @timeout_ms
+ * are elapsed.
+ *
+ * Monitoring of the link state with ratp_link_set_state_update_callback()
+ * cannot be performed while this operation is ongoing; any callback previously
+ * configured will be ignored.
+ *
+ * Returns: a #ratp_status_t.
+ */
+ratp_status_t ratp_link_active_open_sync (ratp_link_t   *self,
+                                          unsigned long  timeout_ms);
+
+/**
+ * ratp_link_passive_open:
+ * @self: a #ratp_link_t.
+ *
+ * Requests to passively open the RATP link.
+ *
+ * This method does not wait for the RATP link to be established, it just
+ * schedules the request. Link state updates may be monitored with the callback
+ * configured via ratp_link_set_state_update_callback().
+ *
+ * Returns: a #ratp_status_t.
+ */
+ratp_status_t ratp_link_passive_open (ratp_link_t *self);
+
+/**
+ * ratp_link_send_ready_func:
+ * @self: a #ratp_link_t.
+ * @status_reason: the status of the send operation.
+ * @user_data: user data given by the user when registering the callback.
+ *
+ * Handler used to report when a sent buffer has been completely sent.
+ */
+typedef void (*ratp_link_send_ready_func) (ratp_link_t   *self,
+                                           ratp_status_t  status_reason,
+                                           void          *user_data);
+
+/**
+ * ratp_link_send:
+ * @self: a #ratp_link_t.
+ * @timeout_ms: maximum time, in milliseconds, to send the whole @buffer; or 0
+ *  to wait forever.
+ * @buffer: data to send through the link.
+ * @buffer_size: size of @buffer.
+ * @callback: a #ratp_link_send_ready_func.
+ * @user_data: user data to be passed to @callback.
+ *
+ * Schedules the data in @buffer to be sent. If the link is not yet established,
+ * it will be sent as soon as the establishment is finished.
+ *
+ * When all the data is sent and acknowledged by the peer, or if any error
+ * happens (timeout included), @callback will be called to inform the user of
+ * the operation result.
+ */
+ratp_status_t ratp_link_send (ratp_link_t               *self,
+                              unsigned long              timeout_ms,
+                              const uint8_t             *buffer,
+                              size_t                     buffer_size,
+                              ratp_link_send_ready_func  callback,
+                              void                      *user_data);
+
+/**
+ * ratp_link_receive_ready_func:
+ * @self: a #ratp_link_t.
+ * @buffer: data received through the link.
+ * @buffer_size: size of @buffer.
+ * @user_data: user data given by the user when registering the callback.
+ *
+ * Handler used to report data received to the user.
+ */
+typedef void (*ratp_link_receive_ready_func) (ratp_link_t   *self,
+                                              const uint8_t *buffer,
+                                              size_t         buffer_size,
+                                              void          *user_data);
+
+/**
+ * ratp_link_set_receive_callback:
+ * @self: a #ratp_link_t.
+ * @callback: a #ratp_link_receive_ready_func.
+ * @user_data: user data to be passed to @callback.
+ *
+ * Set the callback to be called when data is received in the RATP link.
+ */
+void ratp_link_set_receive_callback (ratp_link_t                  *self,
+                                     ratp_link_receive_ready_func  callback,
+                                     void                         *user_data);
+
+/**
+ * ratp_link_close:
+ * @self: a #ratp_link_t.
+ *
+ * Requests to close the RATP link.
+ *
+ * This method does not wait for the RATP link to be closed, it just schedules
+ * the request. Link state updates may be monitored with the callback configured
+ * via ratp_link_set_state_update_callback().
+ *
+ * Returns: a #ratp_status_t.
+ */
+void ratp_link_close (ratp_link_t *self);
+
+/**
+ * ratp_link_close_sync:
+ * @self: a #ratp_link_t.
+ * @timeout_ms: maximum time, in milliseconds, to wait for the link to be
+ *  established; or 0 to wait forever.
+ *
+ * Requests to close the RATP link.
+ *
+ * This method blocks until the RATP link is established or until @timeout_ms
+ * are elapsed.
+ *
+ * Monitoring of the link state with ratp_link_set_state_update_callback()
+ * cannot be performed while this operation is ongoing; any callback previously
+ * configured will be ignored.
+ *
+ * Returns: a #ratp_status_t.
+ */
+ratp_status_t ratp_link_close_sync (ratp_link_t   *self,
+                                    unsigned long  timeout_ms);
+
+/******************************************************************************/
+
+/**
+ * SECTION: ratp-log
+ * @title: Library logging
+ * @short_description: Methods to redirect library logs to a user-defined output.
+ *
+ * This section defines the methods and types that allow the user to configure
+ * how the library logging is exposed.
+ */
+
+/**
+ * ratp_log_level_t:
+ * @RATP_LOG_LEVEL_ERROR: Only error messages are reported.
+ * @RATP_LOG_LEVEL_WARNING: Warning and error messages are reported.
+ * @RATP_LOG_LEVEL_INFO: Info, warning and error messages are reported.
+ * @RATP_LOG_LEVEL_DEBUG: All messages, including debug ones, are reported.
+ *
+ * Logging level.
+ */
+typedef enum {
+    RATP_LOG_LEVEL_ERROR = 0,
+    RATP_LOG_LEVEL_WARNING,
+    RATP_LOG_LEVEL_INFO,
+    RATP_LOG_LEVEL_DEBUG
+} ratp_log_level_t;
+
+/**
+ * ratp_log_level_str:
+ * @level: a #ratp_log_level_t.
+ *
+ * Gets a description for the given #ratp_log_level_t.
+ *
+ * Returns: a constant string.
+ */
+const char *ratp_log_level_str (ratp_log_level_t level);
+
+/**
+ * ratp_log_set_level:
+ * @level: a #ratp_log_level_t.
+ *
+ * Sets the logging level.
+ *
+ * By default the logging level is %RATP_LOG_LEVEL_ERROR.
+ */
+void ratp_log_set_level (ratp_log_level_t level);
+
+/**
+ * ratp_log_get_level:
+ *
+ * Gets the current logging level configured.
+ *
+ * Returns: a #ratp_log_level_t.
+ */
+ratp_log_level_t ratp_log_get_level (void);
+
+/**
+ * ratp_log_handler_t:
+ * @level: the #ratp_log_level_t.
+ * @tid: thread ID where the log message was generated.
+ * @message: the log message.
+ *
+ * Logging handler.
+ */
+typedef void (* ratp_log_handler_t) (ratp_log_level_t  level,
+                                     unsigned long     tid,
+                                     const char       *message);
+
+/**
+ * ratp_log_set_handler:
+ * @handler: a #ratp_log_handler_t, or %NULL.
+ *
+ * Set logging handler.
+ *
+ * This method would be usually called once before any other operation with the
+ * library, e.g. even before ratp_init().
+ */
+void ratp_log_set_handler (ratp_log_handler_t handler);
+
+/******************************************************************************/
+
+/**
+ * SECTION: ratp-version
+ * @title: Library version
+ * @short_description: Methods and types to report library version.
+ *
+ * This section defines the types and methods exposed by the library to report
+ * its own version both at build time and at run time.
+ */
+
+/**
+ * RATP_MAJOR_VERSION:
+ *
+ * Evaluates to the major version number of libratp which this source
+ * is compiled against.
+ */
+#define RATP_MAJOR_VERSION (@RATP_MAJOR_VERSION@)
+
+/**
+ * RATP_MINOR_VERSION:
+ *
+ * Evaluates to the minor version number of libratp which this source
+ * is compiled against.
+ */
+#define RATP_MINOR_VERSION (@RATP_MINOR_VERSION@)
+
+/**
+ * RATP_MICRO_VERSION:
+ *
+ * Evaluates to the micro version number of libratp which this source
+ * compiled against.
+ */
+#define RATP_MICRO_VERSION (@RATP_MICRO_VERSION@)
+
+/**
+ * RATP_CHECK_VERSION:
+ * @major: major version (e.g. 1 for version 1.2.5)
+ * @minor: minor version (e.g. 2 for version 1.2.5)
+ * @micro: micro version (e.g. 5 for version 1.2.5)
+ *
+ * Returns: %TRUE if the version of the libratp header file
+ * is the same as or newer than the given version.
+ */
+#define RATP_CHECK_VERSION(major,minor,micro)                           \
+    (RATP_MAJOR_VERSION > (major) ||                                    \
+     (RATP_MAJOR_VERSION == (major) && RATP_MINOR_VERSION > (minor)) || \
+     (RATP_MAJOR_VERSION == (major) && RATP_MINOR_VERSION == (minor) && RATP_MICRO_VERSION >= (micro)))
+
+/**
+ * ratp_get_major_version:
+ *
+ * Runtime check of the major library version.
+ *
+ * Returns: the major library version.
+ */
+unsigned int ratp_get_major_version (void);
+
+/**
+ * ratp_get_minor_version:
+ *
+ * Runtime check of the minor library version.
+ *
+ * Returns: the minor library version.
+ */
+unsigned int ratp_get_minor_version (void);
+
+/**
+ * ratp_get_micro_version:
+ *
+ * Runtime check of the micro library version.
+ *
+ * Returns: the micro library version.
+ */
+unsigned int ratp_get_micro_version (void);
+
+#endif /* RATP_H */

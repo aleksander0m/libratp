@@ -1,0 +1,5 @@
+
+SUBDIRS = \
+	common \
+	libratp \
+	$(NULL)

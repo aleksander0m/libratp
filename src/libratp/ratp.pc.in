@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=${prefix}/include
+
+Name: ratp
+Description: Library to use the Reliable Asynchronous Transfer Protocol (RFC916)
+Version: @VERSION@
+Requires.private: libevent libevent_pthreads
+Libs: -L${libdir} -lratp
+Cflags: -I${includedir}/
