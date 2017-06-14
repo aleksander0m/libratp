@@ -59,6 +59,7 @@ AC_CONFIG_FILES([Makefile
                  src/libratp/Makefile
                  src/libratp/ratp.h
                  src/libratp/ratp.pc
+                 src/ratp-cli/Makefile
                  doc/Makefile
                  doc/reference/Makefile
                  doc/reference/version.xml])
