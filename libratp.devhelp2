@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<book xmlns="http://www.devhelp.net/book" title="libratp Reference Manual" link="index.html" author="" name="libratp" version="2" language="c">
+  <chapters>
+    <sub name="RATP library core utilities" link="pt01.html">
+      <sub name="Core library operations" link="libratp-Core-library-operations.html"/>
+      <sub name="Library logging" link="libratp-Library-logging.html"/>
+      <sub name="Library version" link="libratp-Library-version.html"/>
+    </sub>
+    <sub name="RATP link" link="pt02.html">
+      <sub name="Link object" link="libratp-Link-object.html"/>
+    </sub>
+    <sub name="API Index" link="ix01.html"/>
+  </chapters>
+  <functions>
+    <keyword type="function" name="ratp_status_str ()" link="libratp-Core-library-operations.html#ratp-status-str"/>
+    <keyword type="function" name="ratp_init ()" link="libratp-Core-library-operations.html#ratp-init"/>
+    <keyword type="enum" name="enum ratp_status_t" link="libratp-Core-library-operations.html#ratp-status-t"/>
+    <keyword type="function" name="ratp_log_level_str ()" link="libratp-Library-logging.html#ratp-log-level-str"/>
+    <keyword type="function" name="ratp_log_handler_t ()" link="libratp-Library-logging.html#ratp-log-handler-t"/>
+    <keyword type="function" name="ratp_log_set_level ()" link="libratp-Library-logging.html#ratp-log-set-level"/>
+    <keyword type="function" name="ratp_log_get_level ()" link="libratp-Library-logging.html#ratp-log-get-level"/>
+    <keyword type="function" name="ratp_log_set_handler ()" link="libratp-Library-logging.html#ratp-log-set-handler"/>
+    <keyword type="enum" name="enum ratp_log_level_t" link="libratp-Library-logging.html#ratp-log-level-t"/>
+    <keyword type="macro" name="RATP_CHECK_VERSION()" link="libratp-Library-version.html#RATP-CHECK-VERSION:CAPS"/>
+    <keyword type="function" name="ratp_get_major_version ()" link="libratp-Library-version.html#ratp-get-major-version"/>
+    <keyword type="function" name="ratp_get_minor_version ()" link="libratp-Library-version.html#ratp-get-minor-version"/>
+    <keyword type="function" name="ratp_get_micro_version ()" link="libratp-Library-version.html#ratp-get-micro-version"/>
+    <keyword type="macro" name="RATP_MAJOR_VERSION" link="libratp-Library-version.html#RATP-MAJOR-VERSION:CAPS"/>
+    <keyword type="macro" name="RATP_MINOR_VERSION" link="libratp-Library-version.html#RATP-MINOR-VERSION:CAPS"/>
+    <keyword type="macro" name="RATP_MICRO_VERSION" link="libratp-Library-version.html#RATP-MICRO-VERSION:CAPS"/>
+    <keyword type="function" name="ratp_link_new_tty ()" link="libratp-Link-object.html#ratp-link-new-tty"/>
+    <keyword type="function" name="ratp_link_new_fifo ()" link="libratp-Link-object.html#ratp-link-new-fifo"/>
+    <keyword type="function" name="ratp_link_free ()" link="libratp-Link-object.html#ratp-link-free"/>
+    <keyword type="function" name="ratp_link_initialize ()" link="libratp-Link-object.html#ratp-link-initialize"/>
+    <keyword type="function" name="ratp_link_shutdown ()" link="libratp-Link-object.html#ratp-link-shutdown"/>
+    <keyword type="function" name="ratp_link_state_str ()" link="libratp-Link-object.html#ratp-link-state-str"/>
+    <keyword type="function" name="ratp_link_get_state ()" link="libratp-Link-object.html#ratp-link-get-state"/>
+    <keyword type="function" name="ratp_link_state_update_func ()" link="libratp-Link-object.html#ratp-link-state-update-func"/>
+    <keyword type="function" name="ratp_link_set_state_update_callback ()" link="libratp-Link-object.html#ratp-link-set-state-update-callback"/>
+    <keyword type="function" name="ratp_link_active_open ()" link="libratp-Link-object.html#ratp-link-active-open"/>
+    <keyword type="function" name="ratp_link_active_open_sync ()" link="libratp-Link-object.html#ratp-link-active-open-sync"/>
+    <keyword type="function" name="ratp_link_passive_open ()" link="libratp-Link-object.html#ratp-link-passive-open"/>
+    <keyword type="function" name="ratp_link_close ()" link="libratp-Link-object.html#ratp-link-close"/>
+    <keyword type="function" name="ratp_link_close_sync ()" link="libratp-Link-object.html#ratp-link-close-sync"/>
+    <keyword type="function" name="ratp_link_send_ready_func ()" link="libratp-Link-object.html#ratp-link-send-ready-func"/>
+    <keyword type="function" name="ratp_link_send ()" link="libratp-Link-object.html#ratp-link-send"/>
+    <keyword type="function" name="ratp_link_receive_ready_func ()" link="libratp-Link-object.html#ratp-link-receive-ready-func"/>
+    <keyword type="function" name="ratp_link_set_receive_callback ()" link="libratp-Link-object.html#ratp-link-set-receive-callback"/>
+    <keyword type="typedef" name="ratp_link_t" link="libratp-Link-object.html#ratp-link-t"/>
+    <keyword type="enum" name="enum ratp_link_state_t" link="libratp-Link-object.html#ratp-link-state-t"/>
+    <keyword type="constant" name="RATP_STATUS_OK" link="libratp-Core-library-operations.html#RATP-STATUS-OK:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_ERROR" link="libratp-Core-library-operations.html#RATP-STATUS-ERROR:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_ERROR_NO_MEMORY" link="libratp-Core-library-operations.html#RATP-STATUS-ERROR-NO-MEMORY:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_INVALID_TRANSITION" link="libratp-Core-library-operations.html#RATP-STATUS-INVALID-TRANSITION:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_WRITE_ERROR" link="libratp-Core-library-operations.html#RATP-STATUS-WRITE-ERROR:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_READ_ERROR" link="libratp-Core-library-operations.html#RATP-STATUS-READ-ERROR:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_TIMEOUT" link="libratp-Core-library-operations.html#RATP-STATUS-TIMEOUT:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_INVALID_DATA" link="libratp-Core-library-operations.html#RATP-STATUS-INVALID-DATA:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_DATA_REFUSED" link="libratp-Core-library-operations.html#RATP-STATUS-DATA-REFUSED:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_DATA_LEFT_UNSENT" link="libratp-Core-library-operations.html#RATP-STATUS-DATA-LEFT-UNSENT:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_CONNECTION_REFUSED" link="libratp-Core-library-operations.html#RATP-STATUS-CONNECTION-REFUSED:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_CONNECTION_RESET" link="libratp-Core-library-operations.html#RATP-STATUS-CONNECTION-RESET:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_CONNECTION_CLOSING" link="libratp-Core-library-operations.html#RATP-STATUS-CONNECTION-CLOSING:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_CONNECTION_ABORTED_USER_TIMEOUT" link="libratp-Core-library-operations.html#RATP-STATUS-CONNECTION-ABORTED-USER-TIMEOUT:CAPS"/>
+    <keyword type="constant" name="RATP_STATUS_CONNECTION_ABORTED_RETRANSMISSION_FAILURE" link="libratp-Core-library-operations.html#RATP-STATUS-CONNECTION-ABORTED-RETRANSMISSION-FAILURE:CAPS"/>
+    <keyword type="constant" name="RATP_LOG_LEVEL_ERROR" link="libratp-Library-logging.html#RATP-LOG-LEVEL-ERROR:CAPS"/>
+    <keyword type="constant" name="RATP_LOG_LEVEL_WARNING" link="libratp-Library-logging.html#RATP-LOG-LEVEL-WARNING:CAPS"/>
+    <keyword type="constant" name="RATP_LOG_LEVEL_INFO" link="libratp-Library-logging.html#RATP-LOG-LEVEL-INFO:CAPS"/>
+    <keyword type="constant" name="RATP_LOG_LEVEL_DEBUG" link="libratp-Library-logging.html#RATP-LOG-LEVEL-DEBUG:CAPS"/>
+    <keyword type="constant" name="RATP_LINK_STATE_LISTEN" link="libratp-Link-object.html#RATP-LINK-STATE-LISTEN:CAPS"/>
+    <keyword type="constant" name="RATP_LINK_STATE_SYN_SENT" link="libratp-Link-object.html#RATP-LINK-STATE-SYN-SENT:CAPS"/>
+    <keyword type="constant" name="RATP_LINK_STATE_SYN_RECEIVED" link="libratp-Link-object.html#RATP-LINK-STATE-SYN-RECEIVED:CAPS"/>
+    <keyword type="constant" name="RATP_LINK_STATE_ESTABLISHED" link="libratp-Link-object.html#RATP-LINK-STATE-ESTABLISHED:CAPS"/>
+    <keyword type="constant" name="RATP_LINK_STATE_FIN_WAIT" link="libratp-Link-object.html#RATP-LINK-STATE-FIN-WAIT:CAPS"/>
+    <keyword type="constant" name="RATP_LINK_STATE_LAST_ACK" link="libratp-Link-object.html#RATP-LINK-STATE-LAST-ACK:CAPS"/>
+    <keyword type="constant" name="RATP_LINK_STATE_CLOSING" link="libratp-Link-object.html#RATP-LINK-STATE-CLOSING:CAPS"/>
+    <keyword type="constant" name="RATP_LINK_STATE_TIME_WAIT" link="libratp-Link-object.html#RATP-LINK-STATE-TIME-WAIT:CAPS"/>
+    <keyword type="constant" name="RATP_LINK_STATE_CLOSED" link="libratp-Link-object.html#RATP-LINK-STATE-CLOSED:CAPS"/>
+  </functions>
+</book>
