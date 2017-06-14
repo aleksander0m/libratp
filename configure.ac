@@ -4,7 +4,7 @@ AC_PREREQ([2.68])
 dnl The libratp version number
 m4_define([ratp_major_version], [0])
 m4_define([ratp_minor_version], [0])
-m4_define([ratp_micro_version], [1])
+m4_define([ratp_micro_version], [2])
 m4_define([ratp_version],
           [ratp_major_version.ratp_minor_version.ratp_micro_version])
 
