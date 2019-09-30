@@ -1588,12 +1588,22 @@ input_ready (evutil_socket_t  fd,
     }
 }
 
+static void
+report_initialized (ratp_link_t *self)
+{
+    pthread_mutex_lock (&self->mutex);
+    if (self->initialized_callback)
+        self->initialized_callback (self, self->initialized_callback_user_data);
+    pthread_mutex_unlock (&self->mutex);
+}
+
 static void *
 thread_start (void *user_data)
 {
     ratp_link_t *self = (ratp_link_t *) user_data;
 
     ratp_debug ("private thread started");
+    report_initialized (self);
     event_base_dispatch (self->base);
     ratp_debug ("private thread finished");
 
@@ -1686,6 +1696,17 @@ ratp_link_shutdown (ratp_link_t *self)
         pthread_join (stop_tid, NULL);
         internal_shutdown (self);
     }
+}
+
+void
+ratp_link_set_initialized_callback (ratp_link_t                *self,
+                                    ratp_link_initialized_func  callback,
+                                    void                       *user_data)
+{
+    pthread_mutex_lock (&self->mutex);
+    self->initialized_callback           = callback;
+    self->initialized_callback_user_data = user_data;
+    pthread_mutex_unlock (&self->mutex);
 }
 
 /******************************************************************************/

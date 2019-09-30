@@ -65,12 +65,14 @@ struct ratp_link_s {
     unsigned int                 max_retransmissions;
 
     /* Thread and event loop */
-    pthread_t          tid;
-    pthread_mutex_t    mutex;
-    struct event_base *base;
-    struct event      *keepalive;
-    struct event      *input;
-    bool               shutdown;
+    pthread_t                   tid;
+    pthread_mutex_t             mutex;
+    struct event_base          *base;
+    struct event               *keepalive;
+    struct event               *input;
+    bool                        shutdown;
+    ratp_link_initialized_func  initialized_callback;
+    void                       *initialized_callback_user_data;
 
     /* State machine */
     ratp_link_state_t            state;

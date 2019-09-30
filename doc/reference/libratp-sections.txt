@@ -36,6 +36,8 @@ ratp_link_free
 <SUBSECTION>
 ratp_link_initialize
 ratp_link_shutdown
+ratp_link_initialized_func
+ratp_link_set_initialized_callback
 <SUBSECTION>
 ratp_link_state_t
 ratp_link_state_str

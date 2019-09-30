@@ -219,6 +219,8 @@ void ratp_link_free (ratp_link_t *self);
 
 /* Initialize and shutdown link */
 
+
+
 /**
  * ratp_link_initialize:
  * @self: a #ratp_link_t.
@@ -241,6 +243,31 @@ ratp_status_t ratp_link_initialize (ratp_link_t *self);
  * This operation closes the physical channel.
  */
 void ratp_link_shutdown (ratp_link_t *self);
+
+/**
+ * ratp_link_initialized_func:
+ * @self: a #ratp_link_t.
+ * @user_data: user data given by the user when registering the callback.
+ *
+ * Handler used to report initialization to the user.
+ */
+typedef void (* ratp_link_initialized_func) (ratp_link_t *self,
+                                             void        *user_data);
+
+/**
+ * ratp_link_set_initialized_callback:
+ * @self: a #ratp_link_t.
+ * @callback: a #ratp_link_initialized_func.
+ * @user_data: user data to be passed to @callback.
+ *
+ * Set the callback to be called when the RATP link is initialized.
+ *
+ * The callback is guaranteed to be called from within the link management
+ * thread.
+ */
+void ratp_link_set_initialized_callback (ratp_link_t                *self,
+                                         ratp_link_initialized_func  callback,
+                                         void                       *user_data);
 
 /* RATP state */
 
