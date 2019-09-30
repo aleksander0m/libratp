@@ -114,8 +114,10 @@ link_update_state_locked (ratp_link_t       *self,
                           ratp_link_state_t  state,
                           ratp_status_t      status_reason)
 {
-    ratp_link_state_t old_state;
-    bool              notify_update = false;
+    ratp_link_state_t            old_state;
+    bool                         notify_update = false;
+    ratp_link_state_update_func  callback;
+    void                        *user_data;
 
     /* We're locked when we get here! */
 
@@ -126,18 +128,22 @@ link_update_state_locked (ratp_link_t       *self,
         self->status_reason = status_reason;
     }
 
-    pthread_mutex_unlock (&self->mutex);
+    callback  = self->state_update_callback;
+    user_data = self->state_update_callback_user_data;
 
     if (notify_update) {
-        ratp_info ("state update: %s -> %s (%s)",
-                   ratp_link_state_str (old_state),
-                   ratp_link_state_str (state),
-                   ratp_status_str     (status_reason));
-        if (self->state_update_callback)
-            self->state_update_callback (self, old_state, state, status_reason, self->state_update_callback_user_data);
+        pthread_mutex_unlock (&self->mutex);
+        {
+            ratp_info ("state update: %s -> %s (%s)",
+                       ratp_link_state_str (old_state),
+                       ratp_link_state_str (state),
+                       ratp_status_str     (status_reason));
+            /* Always call user callback without any lock acquired */
+            if (callback)
+                callback (self, old_state, state, status_reason, user_data);
+        }
+        pthread_mutex_lock (&self->mutex);
     }
-
-    pthread_mutex_lock (&self->mutex);
 }
 
 /******************************************************************************/
@@ -1591,10 +1597,17 @@ input_ready (evutil_socket_t  fd,
 static void
 report_initialized (ratp_link_t *self)
 {
+    ratp_link_initialized_func  callback;
+    void                       *user_data;
+
     pthread_mutex_lock (&self->mutex);
-    if (self->initialized_callback)
-        self->initialized_callback (self, self->initialized_callback_user_data);
+    callback  = self->initialized_callback;
+    user_data = self->initialized_callback_user_data;
     pthread_mutex_unlock (&self->mutex);
+
+    /* Always call user callback without any lock acquired */
+    if (callback)
+        callback (self, user_data);
 }
 
 static void *
