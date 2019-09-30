@@ -1615,8 +1615,9 @@ thread_start (void *user_data)
 {
     ratp_link_t *self = (ratp_link_t *) user_data;
 
-    ratp_debug ("private thread started");
     report_initialized (self);
+
+    ratp_debug ("private thread started");
     event_base_dispatch (self->base);
     ratp_debug ("private thread finished");
 
