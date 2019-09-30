@@ -1722,6 +1722,18 @@ ratp_link_set_initialized_callback (ratp_link_t                *self,
     pthread_mutex_unlock (&self->mutex);
 }
 
+bool
+ratp_link_get_initialized (ratp_link_t *self)
+{
+    bool st;
+
+    pthread_mutex_lock (&self->mutex);
+    st = !!self->tid;
+    pthread_mutex_unlock (&self->mutex);
+
+    return st;
+}
+
 /******************************************************************************/
 
 ratp_link_state_t

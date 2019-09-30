@@ -235,6 +235,16 @@ void ratp_link_free (ratp_link_t *self);
 ratp_status_t ratp_link_initialize (ratp_link_t *self);
 
 /**
+ * ratp_link_get_initialized:
+ * @self: a #ratp_link_t.
+ *
+ * Checks whether the RATP link is initialized.
+ *
+ * Returns: a true if the link is already initialized, false otherwise..
+ */
+bool ratp_link_get_initialized (ratp_link_t *self);
+
+/**
  * ratp_link_shutdown:
  * @self: a #ratp_link_t.
  *
