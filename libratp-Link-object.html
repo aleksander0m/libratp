@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Link object: libratp Reference Manual</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
 <link rel="home" href="index.html" title="libratp Reference Manual">
 <link rel="up" href="pt02.html" title="Part II. RATP link">
 <link rel="prev" href="pt02.html" title="Part II. RATP link">
 <link rel="next" href="ix01.html" title="API Index">
-<meta name="generator" content="GTK-Doc V1.25.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.31 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -73,10 +73,34 @@
 </tr>
 <tr>
 <td class="function_type">
+<span class="returnvalue">bool</span>
+</td>
+<td class="function_name">
+<a class="link" href="libratp-Link-object.html#ratp-link-get-initialized" title="ratp_link_get_initialized ()">ratp_link_get_initialized</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
 <span class="returnvalue">void</span>
 </td>
 <td class="function_name">
 <a class="link" href="libratp-Link-object.html#ratp-link-shutdown" title="ratp_link_shutdown ()">ratp_link_shutdown</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<span class="c_punctuation">(</span><a class="link" href="libratp-Link-object.html#ratp-link-initialized-func" title="ratp_link_initialized_func ()">*ratp_link_initialized_func</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="libratp-Link-object.html#ratp-link-set-initialized-callback" title="ratp_link_set_initialized_callback ()">ratp_link_set_initialized_callback</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -247,39 +271,39 @@ use them.</p>
 31
 32
 33</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> </span><span class="keyword">const</span><span class="normal"> </span><span class="type">char</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">message </span><span class="symbol">=</span><span class="normal"> </span><span class="string">"hello world!"</span><span class="symbol">;</span>
-<span class="usertype">ratp_link_t</span><span class="normal">       </span><span class="symbol">*</span><span class="normal">ratp</span><span class="symbol">;</span>
-<span class="usertype">ratp_status_t</span><span class="normal">      st</span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="k">static</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="s">&quot;hello world!&quot;</span><span class="p">;</span>
+<span class="n">ratp_link_t</span>       <span class="o">*</span><span class="n">ratp</span><span class="p">;</span>
+<span class="n">ratp_status_t</span>      <span class="n">st</span><span class="p">;</span>
 
-<span class="normal">ratp </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="libratp-Link-object.html#ratp-link-new-tty">ratp_link_new_tty</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"/dev/ttyUSB3"</span><span class="symbol">,</span><span class="normal"> B115200</span><span class="symbol">,</span><span class="normal"> </span><span class="number">255</span><span class="symbol">);</span>
-<span class="keyword">if</span><span class="normal"> </span><span class="symbol">(!</span><span class="normal">ratp</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
-<span class="normal">  </span><span class="function">fprintf</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">stderr</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"error: couldn't create link</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="keyword">return</span><span class="normal"> EXIT_FAILURE</span><span class="symbol">;</span>
-<span class="cbracket">}</span>
+<span class="n">ratp</span> <span class="o">=</span> <span class="n">ratp_link_new_tty</span> <span class="p">(</span><span class="s">&quot;/dev/ttyUSB3&quot;</span><span class="p">,</span> <span class="n">B115200</span><span class="p">,</span> <span class="mi">255</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ratp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">fprintf</span> <span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;error: couldn&#39;t create link</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="p">}</span>
 
-<span class="keyword">if</span><span class="normal"> </span><span class="symbol">((</span><span class="normal">st </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="libratp-Link-object.html#ratp-link-initialize">ratp_link_initialize</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">ratp</span><span class="symbol">))</span><span class="normal"> </span><span class="symbol">!=</span><span class="normal"> <a href="libratp-Core-library-operations.html#RATP-STATUS-OK:CAPS">RATP_STATUS_OK</a></span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
-<span class="normal">  </span><span class="function">fprintf</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">stderr</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"error: couldn't initialize link: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="libratp-Core-library-operations.html#ratp-status-str">ratp_status_str</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">st</span><span class="symbol">));</span>
-<span class="normal">  </span><span class="keyword">return</span><span class="normal"> EXIT_FAILURE</span><span class="symbol">;</span>
-<span class="cbracket">}</span>
+<span class="k">if</span> <span class="p">((</span><span class="n">st</span> <span class="o">=</span> <span class="n">ratp_link_initialize</span> <span class="p">(</span><span class="n">ratp</span><span class="p">))</span> <span class="o">!=</span> <span class="n">RATP_STATUS_OK</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">fprintf</span> <span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;error: couldn&#39;t initialize link: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">ratp_status_str</span> <span class="p">(</span><span class="n">st</span><span class="p">));</span>
+  <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="p">}</span>
 
-<span class="keyword">if</span><span class="normal"> </span><span class="symbol">((</span><span class="normal">st </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="libratp-Link-object.html#ratp-link-active-open">ratp_link_active_open</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">ratp</span><span class="symbol">))</span><span class="normal"> </span><span class="symbol">!=</span><span class="normal"> <a href="libratp-Core-library-operations.html#RATP-STATUS-OK:CAPS">RATP_STATUS_OK</a></span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
-<span class="normal">  </span><span class="function">fprintf</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">stderr</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"error: couldn't request active open: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="libratp-Core-library-operations.html#ratp-status-str">ratp_status_str</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">st</span><span class="symbol">));</span>
-<span class="normal">  </span><span class="keyword">return</span><span class="normal"> </span><span class="symbol">-</span><span class="number">1</span><span class="symbol">;</span>
-<span class="cbracket">}</span>
+<span class="k">if</span> <span class="p">((</span><span class="n">st</span> <span class="o">=</span> <span class="n">ratp_link_active_open</span> <span class="p">(</span><span class="n">ratp</span><span class="p">))</span> <span class="o">!=</span> <span class="n">RATP_STATUS_OK</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">fprintf</span> <span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;error: couldn&#39;t request active open: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">ratp_status_str</span> <span class="p">(</span><span class="n">st</span><span class="p">));</span>
+  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
 
-<span class="keyword">if</span><span class="normal"> </span><span class="symbol">((</span><span class="normal">st </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="libratp-Link-object.html#ratp-link-send">ratp_link_send</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">ratp</span><span class="symbol">,</span>
-<span class="normal">                          </span><span class="number">10000</span><span class="symbol">,</span>
-<span class="normal">                          </span><span class="symbol">(</span><span class="keyword">const</span><span class="normal"> uint8_t </span><span class="symbol">*)</span><span class="normal"> message</span><span class="symbol">,</span><span class="normal"> </span><span class="function">strlen</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">message</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">1</span><span class="symbol">,</span>
-<span class="normal">                          <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">))</span><span class="normal"> </span><span class="symbol">!=</span><span class="normal"> <a href="libratp-Core-library-operations.html#RATP-STATUS-OK:CAPS">RATP_STATUS_OK</a></span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
-<span class="normal">    </span><span class="function">fprintf</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">stderr</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"error: couldn't schedule message to send: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="libratp-Core-library-operations.html#ratp-status-str">ratp_status_str</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">st</span><span class="symbol">));</span>
-<span class="normal">    </span><span class="keyword">return</span><span class="normal"> </span><span class="symbol">-</span><span class="number">1</span><span class="symbol">;</span>
-<span class="cbracket">}</span>
+<span class="k">if</span> <span class="p">((</span><span class="n">st</span> <span class="o">=</span> <span class="n">ratp_link_send</span> <span class="p">(</span><span class="n">ratp</span><span class="p">,</span>
+                          <span class="mi">10000</span><span class="p">,</span>
+                          <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">message</span><span class="p">,</span> <span class="n">strlen</span> <span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                          <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">))</span> <span class="o">!=</span> <span class="n">RATP_STATUS_OK</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">fprintf</span> <span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;error: couldn&#39;t schedule message to send: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">ratp_status_str</span> <span class="p">(</span><span class="n">st</span><span class="p">));</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
 
-<span class="comment">// Do more things here if needed</span>
+<span class="c1">// Do more things here if needed</span>
 
-<span class="function"><a href="libratp-Link-object.html#ratp-link-close">ratp_link_close</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">ratp</span><span class="symbol">);</span>
-<span class="function"><a href="libratp-Link-object.html#ratp-link-shutdown">ratp_link_shutdown</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">ratp</span><span class="symbol">);</span>
-<span class="function"><a href="libratp-Link-object.html#ratp-link-free">ratp_link_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">ratp</span><span class="symbol">);</span></pre></td>
+<span class="n">ratp_link_close</span> <span class="p">(</span><span class="n">ratp</span><span class="p">);</span>
+<span class="n">ratp_link_shutdown</span> <span class="p">(</span><span class="n">ratp</span><span class="p">);</span>
+<span class="n">ratp_link_free</span> <span class="p">(</span><span class="n">ratp</span><span class="p">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -308,26 +332,27 @@ ratp_link_new_tty (<em class="parameter"><code>const <span class="type">char</sp
 <tbody>
 <tr>
 <td class="parameter_name"><p>path</p></td>
-<td class="parameter_description"><p>Serial port device path.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>Serial port device path. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>speed</p></td>
-<td class="parameter_description"><p>Baudrate to use in the serial port.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>Baudrate to use in the serial port. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>mdl</p></td>
-<td class="parameter_description"><p>Maximum data length allowed in this end.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>Maximum data length allowed in this end. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="refsect3">
 <a name="ratp-link-new-tty.returns"></a><h4>Returns</h4>
-<p> a newly created <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a> which should be disposed with
-<a class="link" href="libratp-Link-object.html#ratp-link-free" title="ratp_link_free ()"><code class="function">ratp_link_free()</code></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an error happened.</p>
+<p>a newly created <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a> which should be
+disposed with <a class="link" href="libratp-Link-object.html#ratp-link-free" title="ratp_link_free ()"><code class="function">ratp_link_free()</code></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an error happened. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 </div>
 <hr>
@@ -349,26 +374,27 @@ ratp_link_new_fifo (<em class="parameter"><code>const <span class="type">char</s
 <tbody>
 <tr>
 <td class="parameter_name"><p>path_in</p></td>
-<td class="parameter_description"><p>Input FIFO path.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>Input FIFO path. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>path_out</p></td>
-<td class="parameter_description"><p>Output FIFO path.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>Output FIFO path. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>mdl</p></td>
-<td class="parameter_description"><p>Maximum data length allowed in this end.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>Maximum data length allowed in this end. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="refsect3">
 <a name="ratp-link-new-fifo.returns"></a><h4>Returns</h4>
-<p> a newly created <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a> which should be disposed with
-<a class="link" href="libratp-Link-object.html#ratp-link-free" title="ratp_link_free ()"><code class="function">ratp_link_free()</code></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an error happened.</p>
+<p>a newly created <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a> which should be
+disposed with <a class="link" href="libratp-Link-object.html#ratp-link-free" title="ratp_link_free ()"><code class="function">ratp_link_free()</code></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an error happened. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 </div>
 <hr>
@@ -387,8 +413,8 @@ ratp_link_free (<em class="parameter"><code><a class="link" href="libratp-Link-o
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
 </tr></tbody>
 </table></div>
 </div>
@@ -411,14 +437,40 @@ or receive any RATP packet.</p>
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr></tbody>
 </table></div>
 </div>
 <div class="refsect3">
 <a name="ratp-link-initialize.returns"></a><h4>Returns</h4>
 <p> a <a class="link" href="libratp-Core-library-operations.html#ratp-status-t" title="enum ratp_status_t"><span class="type">ratp_status_t</span></a>.</p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="ratp-link-get-initialized"></a><h3>ratp_link_get_initialized ()</h3>
+<pre class="programlisting"><span class="returnvalue">bool</span>
+ratp_link_get_initialized (<em class="parameter"><code><a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a> *self</code></em>);</pre>
+<p>Checks whether the RATP link is initialized.</p>
+<div class="refsect3">
+<a name="ratp-link-get-initialized.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="ratp-link-get-initialized.returns"></a><h4>Returns</h4>
+<p> a true if the link is already initialized, false otherwise..</p>
 </div>
 </div>
 <hr>
@@ -438,9 +490,78 @@ ratp_link_shutdown (<em class="parameter"><code><a class="link" href="libratp-Li
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="ratp-link-initialized-func"></a><h3>ratp_link_initialized_func ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+<span class="c_punctuation">(</span>*ratp_link_initialized_func<span class="c_punctuation">)</span> (<em class="parameter"><code><a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a> *self</code></em>,
+                               <em class="parameter"><code><span class="type">void</span> *user_data</code></em>);</pre>
+<p>Handler used to report initialization to the user.</p>
+<div class="refsect3">
+<a name="ratp-link-initialized-func.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data given by the user when registering the callback. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="ratp-link-set-initialized-callback"></a><h3>ratp_link_set_initialized_callback ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+ratp_link_set_initialized_callback (<em class="parameter"><code><a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a> *self</code></em>,
+                                    <em class="parameter"><code><a class="link" href="libratp-Link-object.html#ratp-link-initialized-func" title="ratp_link_initialized_func ()"><span class="type">ratp_link_initialized_func</span></a> callback</code></em>,
+                                    <em class="parameter"><code><span class="type">void</span> *user_data</code></em>);</pre>
+<p>Set the callback to be called when the RATP link is initialized.</p>
+<p>The callback is guaranteed to be called from within the link management
+thread.</p>
+<div class="refsect3">
+<a name="ratp-link-set-initialized-callback.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>self</p></td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>callback</p></td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-initialized-func" title="ratp_link_initialized_func ()"><span class="type">ratp_link_initialized_func</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data to be passed to <em class="parameter"><code>callback</code></em>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
+</tr>
+</tbody>
 </table></div>
 </div>
 </div>
@@ -460,8 +581,8 @@ ratp_link_state_str (<em class="parameter"><code><a class="link" href="libratp-L
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>state</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-state-t" title="enum ratp_link_state_t"><span class="type">ratp_link_state_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-state-t" title="enum ratp_link_state_t"><span class="type">ratp_link_state_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr></tbody>
 </table></div>
 </div>
@@ -486,8 +607,8 @@ ratp_link_get_state (<em class="parameter"><code><a class="link" href="libratp-L
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr></tbody>
 </table></div>
 </div>
@@ -517,28 +638,29 @@ ratp_link_get_state (<em class="parameter"><code><a class="link" href="libratp-L
 <tbody>
 <tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>old_state</p></td>
-<td class="parameter_description"><p>the previous RATP link state.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>the previous RATP link state. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>new_state</p></td>
-<td class="parameter_description"><p>the new RATP link state.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>the new RATP link state. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>status_reason</p></td>
-<td class="parameter_description"><p>the reason for the state change.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>the reason for the state change. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>user_data</p></td>
-<td class="parameter_description"><p>user data given by the user when registering the callback.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>user data given by the user when registering
+the callback. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -563,19 +685,19 @@ ratp_link_set_state_update_callback (<em class="parameter"><code><a class="link"
 <tbody>
 <tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>callback</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-state-update-func" title="ratp_link_state_update_func ()"><span class="type">ratp_link_state_update_func</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-state-update-func" title="ratp_link_state_update_func ()"><span class="type">ratp_link_state_update_func</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>user_data</p></td>
 <td class="parameter_description"><p>user data to be passed to <em class="parameter"><code>callback</code></em>
-.</p></td>
-<td class="parameter_annotations"> </td>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -600,8 +722,8 @@ configured via <a class="link" href="libratp-Link-object.html#ratp-link-set-stat
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr></tbody>
 </table></div>
 </div>
@@ -634,14 +756,14 @@ configured will be ignored.</p>
 <tbody>
 <tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>timeout_ms</p></td>
 <td class="parameter_description"><p>maximum time, in milliseconds, to wait for the link to be
-established; or 0 to wait forever.</p></td>
-<td class="parameter_annotations"> </td>
+established; or 0 to wait forever. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -670,8 +792,8 @@ configured via <a class="link" href="libratp-Link-object.html#ratp-link-set-stat
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr></tbody>
 </table></div>
 </div>
@@ -699,8 +821,8 @@ via <a class="link" href="libratp-Link-object.html#ratp-link-set-state-update-ca
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr></tbody>
 </table></div>
 </div>
@@ -733,14 +855,14 @@ configured will be ignored.</p>
 <tbody>
 <tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>timeout_ms</p></td>
 <td class="parameter_description"><p>maximum time, in milliseconds, to wait for the link to be
-established; or 0 to wait forever.</p></td>
-<td class="parameter_annotations"> </td>
+closed; or 0 to wait forever. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -769,18 +891,19 @@ established; or 0 to wait forever.</p></td>
 <tbody>
 <tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
+<td class="parameter_description"><p>a (in) (not nullable): <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>status_reason</p></td>
-<td class="parameter_description"><p>the status of the send operation.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>the status of the send operation. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>user_data</p></td>
-<td class="parameter_description"><p>user data given by the user when registering the callback.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>user data given by the user when registering
+the callback. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -814,37 +937,38 @@ the operation result.</p>
 <tbody>
 <tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>timeout_ms</p></td>
-<td class="parameter_description"><p>maximum time, in milliseconds, to send the whole <em class="parameter"><code>buffer</code></em>
-; or 0
-to wait forever.</p></td>
+<td class="parameter_description"><p>(in) maximum time, in milliseconds, to send the whole <em class="parameter"><code>buffer</code></em>
+;
+or 0 to wait forever.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>buffer</p></td>
-<td class="parameter_description"><p>data to send through the link.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>data to send
+through the link. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=buffer_size][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>buffer_size</p></td>
 <td class="parameter_description"><p>size of <em class="parameter"><code>buffer</code></em>
-.</p></td>
-<td class="parameter_annotations"> </td>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>callback</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-send-ready-func" title="ratp_link_send_ready_func ()"><span class="type">ratp_link_send_ready_func</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-send-ready-func" title="ratp_link_send_ready_func ()"><span class="type">ratp_link_send_ready_func</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>user_data</p></td>
 <td class="parameter_description"><p>user data to be passed to <em class="parameter"><code>callback</code></em>
-.</p></td>
-<td class="parameter_annotations"> </td>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -870,24 +994,26 @@ to wait forever.</p></td>
 <tbody>
 <tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>buffer</p></td>
-<td class="parameter_description"><p>data received through the link.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>data received
+through the link. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=buffer_size][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>buffer_size</p></td>
 <td class="parameter_description"><p>size of <em class="parameter"><code>buffer</code></em>
-.</p></td>
-<td class="parameter_annotations"> </td>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>user_data</p></td>
-<td class="parameter_description"><p>user data given by the user when registering the callback.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>user data given by the user when registering
+the callback. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -912,19 +1038,19 @@ ratp_link_set_receive_callback (<em class="parameter"><code><a class="link" href
 <tbody>
 <tr>
 <td class="parameter_name"><p>self</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-t" title="ratp_link_t"><span class="type">ratp_link_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL must not be passed as the value in, out, in-out; or as a return value."><span class="acronym">not nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>callback</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-receive-ready-func" title="ratp_link_receive_ready_func ()"><span class="type">ratp_link_receive_ready_func</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Link-object.html#ratp-link-receive-ready-func" title="ratp_link_receive_ready_func ()"><span class="type">ratp_link_receive_ready_func</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>user_data</p></td>
 <td class="parameter_description"><p>user data to be passed to <em class="parameter"><code>callback</code></em>
-.</p></td>
-<td class="parameter_annotations"> </td>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>][<acronym title="NULL may be passed as the value in, out, in-out; or as a return value."><span class="acronym">nullable</span></acronym>]</span></td>
 </tr>
 </tbody>
 </table></div>
@@ -1022,6 +1148,6 @@ ratp_link_set_receive_callback (<em class="parameter"><code><a class="link" href
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.25.1</div>
+<hr>Generated by GTK-Doc V1.31</div>
 </body>
 </html>

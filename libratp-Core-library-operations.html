@@ -3,12 +3,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Core library operations: libratp Reference Manual</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
+<meta name="generator" content="DocBook XSL Stylesheets Vsnapshot">
 <link rel="home" href="index.html" title="libratp Reference Manual">
 <link rel="up" href="pt01.html" title="Part I. RATP library core utilities">
 <link rel="prev" href="pt01.html" title="Part I. RATP library core utilities">
 <link rel="next" href="libratp-Library-logging.html" title="Library logging">
-<meta name="generator" content="GTK-Doc V1.25.1 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.31 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -87,14 +87,14 @@
 6
 7
 8</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">ratp_status_t</span><span class="normal">  st</span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="n">ratp_status_t</span>  <span class="n">st</span><span class="p">;</span>
 
-<span class="keyword">if</span><span class="normal"> </span><span class="symbol">((</span><span class="normal">st </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="libratp-Core-library-operations.html#ratp-init">ratp_init</a></span><span class="normal"> </span><span class="symbol">())</span><span class="normal"> </span><span class="symbol">!=</span><span class="normal"> <a href="libratp-Core-library-operations.html#RATP-STATUS-OK:CAPS">RATP_STATUS_OK</a></span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
-<span class="normal">  </span><span class="function">fprintf</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">stderr</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"error: couldn't initialize RATP library: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="libratp-Core-library-operations.html#ratp-status-str">ratp_status_str</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">st</span><span class="symbol">));</span>
-<span class="normal">  </span><span class="keyword">return</span><span class="normal"> EXIT_FAILURE</span><span class="symbol">;</span>
-<span class="cbracket">}</span>
+<span class="k">if</span> <span class="p">((</span><span class="n">st</span> <span class="o">=</span> <span class="n">ratp_init</span> <span class="p">())</span> <span class="o">!=</span> <span class="n">RATP_STATUS_OK</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">fprintf</span> <span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;error: couldn&#39;t initialize RATP library: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">ratp_status_str</span> <span class="p">(</span><span class="n">st</span><span class="p">));</span>
+  <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+<span class="p">}</span>
 
-<span class="comment">// Use the library here</span></pre></td>
+<span class="c1">// Use the library here</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -120,8 +120,8 @@ ratp_status_str (<em class="parameter"><code><a class="link" href="libratp-Core-
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>st</p></td>
-<td class="parameter_description"><p>a <a class="link" href="libratp-Core-library-operations.html#ratp-status-t" title="enum ratp_status_t"><span class="type">ratp_status_t</span></a>.</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p>a <a class="link" href="libratp-Core-library-operations.html#ratp-status-t" title="enum ratp_status_t"><span class="type">ratp_status_t</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for input. Default is transfer none."><span class="acronym">in</span></acronym>]</span></td>
 </tr></tbody>
 </table></div>
 </div>
@@ -253,7 +253,7 @@ fatal error.</p>
 <td class="enum_member_name"><p><a name="RATP-STATUS-CONNECTION-ABORTED-USER-TIMEOUT:CAPS"></a>RATP_STATUS_CONNECTION_ABORTED_USER_TIMEOUT</p></td>
 <td class="enum_member_description">
 <p>Connection aborted due to user
- timeout.</p>
+timeout.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -261,7 +261,7 @@ fatal error.</p>
 <td class="enum_member_name"><p><a name="RATP-STATUS-CONNECTION-ABORTED-RETRANSMISSION-FAILURE:CAPS"></a>RATP_STATUS_CONNECTION_ABORTED_RETRANSMISSION_FAILURE</p></td>
 <td class="enum_member_description">
 <p>Connection aborted
- due to retransmission failures.</p>
+due to retransmission failures.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -272,6 +272,6 @@ fatal error.</p>
 </div>
 </div>
 <div class="footer">
-<hr>Generated by GTK-Doc V1.25.1</div>
+<hr>Generated by GTK-Doc V1.31</div>
 </body>
 </html>

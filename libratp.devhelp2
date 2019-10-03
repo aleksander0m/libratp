@@ -10,6 +10,7 @@
       <sub name="Link object" link="libratp-Link-object.html"/>
     </sub>
     <sub name="API Index" link="ix01.html"/>
+    <sub name="Annotation Glossary" link="annotation-glossary.html"/>
   </chapters>
   <functions>
     <keyword type="function" name="ratp_status_str ()" link="libratp-Core-library-operations.html#ratp-status-str"/>
@@ -32,7 +33,10 @@
     <keyword type="function" name="ratp_link_new_fifo ()" link="libratp-Link-object.html#ratp-link-new-fifo"/>
     <keyword type="function" name="ratp_link_free ()" link="libratp-Link-object.html#ratp-link-free"/>
     <keyword type="function" name="ratp_link_initialize ()" link="libratp-Link-object.html#ratp-link-initialize"/>
+    <keyword type="function" name="ratp_link_get_initialized ()" link="libratp-Link-object.html#ratp-link-get-initialized"/>
     <keyword type="function" name="ratp_link_shutdown ()" link="libratp-Link-object.html#ratp-link-shutdown"/>
+    <keyword type="function" name="ratp_link_initialized_func ()" link="libratp-Link-object.html#ratp-link-initialized-func"/>
+    <keyword type="function" name="ratp_link_set_initialized_callback ()" link="libratp-Link-object.html#ratp-link-set-initialized-callback"/>
     <keyword type="function" name="ratp_link_state_str ()" link="libratp-Link-object.html#ratp-link-state-str"/>
     <keyword type="function" name="ratp_link_get_state ()" link="libratp-Link-object.html#ratp-link-get-state"/>
     <keyword type="function" name="ratp_link_state_update_func ()" link="libratp-Link-object.html#ratp-link-state-update-func"/>
